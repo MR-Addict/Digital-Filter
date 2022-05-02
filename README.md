@@ -1,32 +1,52 @@
-# FIR and IIR digital Filter
+# Digital Filter
 
 ## 1. Preview
 
-Typically, FIR and IIR Filter are mostly used digital filter. Image below is Roll and Pitch raw and filted data. We can find that filted data is more smooth and can filt high frequency peak mostly.
+Typically, we use **Digital Filter** to process digital signal and sensor data, smoothing or filting data. There are many digital filting algorithm, most popular filters are:
 
-With digial Filter, data is more stable and useful for processing. In my opinion, FIR filter is much better than IIR filter, but FIR filter **comsumes more computing power**.
+- **FIR Filter**
+- **MAF Filter**
+- **IIR Filter**
 
-![Image](Images/FIRFilter.png)
+FIR Filter is more powerful than MAF and IIR filter, abling to **stablizie**, **smooth**, and **filt** data, but it comsumes more compute power.
 
-But there is also another drawback of FIR Filter, which is that it's filter is **lagged** after raw data, higher frequeny, more lagger data processing.
+MAF Filt is a simplified FIR Filter that only to average singal data, but it's also working well.
+
+IIR Filter is much more faster, but it's less powerfull than FIR and MAF Filters.
+
+Image below is raw roll and pitch data from MPU6050.
+
+![Raw-Data](Images/RollPitch.png)
+
+After filting roll and pitch raw data using MAF Filter, data signal looks like below.
+
+![Filted-Data](Images/FiltedData.png)
+
+## 2. Drawbacks
+
+The biggest problem of FIR Filte is that filter whill **lag** after raw data. Higher frequeny, more lagger data processing.
 
 You can clearly find it in below picture.
 
 ![Drawback](Images/Drawback.png)
 
-All in all, filted is more useful when you counter some external disturbence.
-
-## 2. FIR and IIR Online Designer
-
-There are plenty of FIR online desinger if you google it. What I like most is [TFilter](http://t-filter.engineerjs.com). You can specify your designs in This website. For example, my sampling rate is 100Hz, and my desired frequency is 5 Hz, I want to cutoff 25-50Hz, after clicking `DESIGN FILTER` I get my filter taps.
-
-![TFilter](Images/TFilter.png)
-
-Generated filter taps are use for FIR Filter.
+Lagging problem is less if you'ar using MAF or IIR Filters.All in all, data fusing is important.
 
 ## 3. FIR Filter
 
-You can directly use FIR Libarary for you application, which I referred from [Phil’s Lab](https://www.youtube.com/channel/UCVryWqJ4cSlbTSETBHpBUWw) who did a great job on **Control System**.
+### 3.1 FIR Online Designer
+
+FIR Filter is much more difficult than MAF and IIR Filters, you need to calculating your own filter taps. We often using programming or Online Designers.
+
+There are plenty of FIR online desinger if you google it. What I using is [TFilter](http://t-filter.engineerjs.com). You can specify your designs in This website. For example, my sampling rate is 100Hz, and my desired frequency is 5 Hz, I want to cutoff 25-50Hz, after clicking `DESIGN FILTER` I get my filter taps.
+
+![TFilter](Images/TFilter.png)
+
+Generated filter taps are use for FIR Filter after.
+
+### 3.2 FIR Filter Implement
+
+You can directly use FIR Libarary for you own application, which I referred from [Phil’s Lab](https://www.youtube.com/channel/UCVryWqJ4cSlbTSETBHpBUWw) who did a great job on **Control System**.
 
 First you need to include FIRFilter in your project.
 
@@ -48,8 +68,8 @@ float coeff[] = {
 And you need to clear a **FIRFilter** struct and pass above two arrey to it.
 
 ```c
-FIRFilter FIR;
-FIRFilter_Init(&FIR, coeff, buffer, sizeof(coeff)/sizeof(float));
+FIRFilter FIRRoll;
+FIRFilter_Init(&FIRRoll, coeff, buffer, sizeof(coeff)/sizeof(float));
 ```
 
 After all of this, you can now use FIRFilter in your project. For example, I need to filter my Roll data, I can do below.
@@ -57,11 +77,53 @@ After all of this, you can now use FIRFilter in your project. For example, I nee
 ```c
 char message[50] = { 0 };
 float roll = MPU_GetRoll();
-FIRFilter_Update(&FIR, roll);
-sprintf(message, "%.2f\t%.2f\r\n", roll, FIR.out);
+FIRFilter_Update(&FIRRoll, roll);
+sprintf(message, "%.2f\t%.2f\r\n", roll, FIRRoll.out);
 HAL_UART_Transmit(&huart1, (uint8_t*) message, sizeof(message), 10);
 ```
 
-You can call you filted data by using `FIR.out`;
+You can get you filted data by calling `FIRRoll.out`;
+
+## 4. MAF Filter
+
+MAF Filter usage is much more easily than FIR Filter, you do not need to design filter taps, because you are averaging your data.
+
+So you just need to including MAFFilter libaray, declear a MAFFilter struct and init Filter.
+
+```c
+#include "MAFFilter.h"
+MAFFilter MAFRoll;
+MAFFileter_Init(&MAFRoll);
+```
+
+After that, you can using MAF Filter just like before, get filted data by calling `MAFRoll.out`.
+
+```c
+char message[50] = { 0 };
+float roll = MPU_GetRoll();
+MAFFilter_Update(&MAFRoll, roll);
+sprintf(message, "%.2f\t%.2f\r\n", roll, MAFRoll.out);
+HAL_UART_Transmit(&huart1, (uint8_t*) message, sizeof(message), 10);
+```
+
+## 5. IIR Filter
+
+IIR Filter is as easy as MAF Filter, you just need to specify alpha you want to use for your filting.
+
+```c
+#include "IIRFilter.h"
+IIRFilter IIRRoll;
+IIRFilter_Init(&IIRRoll, 0.5);
+```
+
+Then using IIR Filter.
+
+```c
+char message[50] = { 0 };
+float roll = MPU_GetRoll();
+IIRFilter_Update(&IIRRoll, roll);
+sprintf(message, "%.2f\t%.2f\r\n", roll, IIRRoll.out);
+HAL_UART_Transmit(&huart1, (uint8_t*) message, sizeof(message), 10);
+```
 
 Happy Coding!
