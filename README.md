@@ -28,8 +28,6 @@ Generated filter taps are use for FIR Filter.
 
 You can directly use FIR Libarary for you application, which I referred from [Phil’s Lab](https://www.youtube.com/channel/UCVryWqJ4cSlbTSETBHpBUWw) who did a great job on **Control System**.
 
-### 3.1 Incude FIRFilter Library
-
 First you need to include FIRFilter in your project.
 
 ```c
