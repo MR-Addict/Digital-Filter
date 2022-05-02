@@ -26,7 +26,7 @@ After filting using MAF Filter, data signal looks like below, and the result is 
 
 The biggest problem of FIR Filte is that filter will cause **lagging** data. Higher frequeny, more lagger data processing.
 
-You can clearly see it in below.
+You can clearly see it showing below.
 
 ![Drawback](Images/Drawback.png)
 
@@ -36,7 +36,7 @@ Lagging problem is less if you're using MAF or IIR Filters. All in all, sensor f
 
 ### 3.1 FIR Online Designer
 
-FIR Filter is much more difficult than MAF and IIR Filters, you need to calculating your own filter taps. We often using programmes or Online Designers to do this job.
+FIR Filter is the most difficult Fiters comparing with MAF and IIR Filters, you need to calculating your own filter taps. We often using programmes or Online Designers to do this job.
 
 There are plenty of FIR online desingers if you google it. What I using is [TFilter](http://t-filter.engineerjs.com). You can specify your design needs in this website. For example, my sampling rate is 100Hz, and my desired frequency is 5 Hz, I want to cutoff 25-50Hz signal, after clicking `DESIGN FILTER`.
 
@@ -65,7 +65,7 @@ float taps[] = {
 };
 ```
 
-And you need to clear a **FIRFilter** struct and pass above two arreies to it.
+And you need to declear a **FIRFilter** struct and pass above two arreies to it.
 
 ```c
 FIRFilter FIRRoll;
