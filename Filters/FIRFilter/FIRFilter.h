@@ -8,13 +8,12 @@
 #ifndef INC_FIRFILTER_FIRFILTER_H_
 #define INC_FIRFILTER_FIRFILTER_H_
 
-#include "stdio.h"
+#include "stdint.h"
 
 typedef struct {
-	float out;
 	float *buf;
-	float *coeff;
-	uint8_t order;
+	float *taps;
+	uint8_t length;
 	uint8_t putIndex;
 } FIRFilter;
 

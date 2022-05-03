@@ -8,12 +8,11 @@
 #ifndef INC_MAFFILTER_MAFFILTER_H_
 #define INC_MAFFILTER_MAFFILTER_H_
 
-#include "stdio.h"
+#include "stdint.h"
 
 #define MAF_LENGTH 10
 
 typedef struct {
-	float out;
 	float buf[MAF_LENGTH];
 	uint8_t putIndex;
 } MAFFilter;
