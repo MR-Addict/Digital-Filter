@@ -32,9 +32,11 @@ You can clearly see it showing below.
 
 Lagging problem is less if you're using MAF or IIR Filters. All in all, sensor fusing is really important.
 
-## 3. FIR Filter
+## 3. Filter Implement
 
-### 3.1 FIR Online Designer
+### 3.1 FIR Filter
+
+#### 3.1.1 FIR Online Designer
 
 FIR Filter is the most difficult Filters comparing with MAF and IIR Filters, you need to calculating your own filter taps. We often using programmes or Online Designers to do this job.
 
@@ -44,7 +46,7 @@ There are plenty of FIR online desingers if you google it. What I using is [TFil
 
 Generated filter taps are use for FIR Filter Implement after.
 
-### 3.2 FIR Filter Implement
+#### 3.1.2 FIR Filter Implement
 
 You can directly use FIR Libarary for you own application, which I referred from [Phil’s Lab](https://www.youtube.com/channel/UCVryWqJ4cSlbTSETBHpBUWw) who did a great job on **Control System**.
 
@@ -72,7 +74,7 @@ FIRFilter FIRRoll;
 FIRFilter_Init(&FIRRoll, taps, buffer, sizeof(taps)/sizeof(float));
 ```
 
-After all of this, you can now use FIR Filter in your project. For example, if I need to filter my Roll data, I can do below.
+After all of this, you can now use FIR Filter in your project. For example, if I need to filt my Roll data, I can do below.
 
 ```c
 char message[50] = { 0 };
@@ -82,7 +84,7 @@ sprintf(message, "%.2f\t%.2f\r\n", roll, rollFilted);
 HAL_UART_Transmit(&huart1, (uint8_t*) message, sizeof(message), 10);
 ```
 
-## 4. MAF Filter
+### 3.2 MAF Filter Implement
 
 MAF Filter usage is much more easier than FIR Filter, you do not need to design filter taps, because you are averaging your data.
 
@@ -104,7 +106,7 @@ sprintf(message, "%.2f\t%.2f\r\n", roll, rollFilted);
 HAL_UART_Transmit(&huart1, (uint8_t*) message, sizeof(message), 10);
 ```
 
-## 5. IIR Filter
+### 3.3 IIR Filter Implement
 
 IIR Filter is as easy as MAF Filter, you just need to specify **alpha** you want to use for your filting.
 
